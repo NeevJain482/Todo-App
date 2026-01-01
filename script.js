@@ -1,6 +1,9 @@
-let todoText = document.getElementById("todo-text");
-let list = document.getElementById("list");
+const template = document.getElementById("template");
+const todoText = document.getElementById("todo-text");
+const list = document.getElementById("list");
 let todos = [];
+
+const $ = (el) => document.getElementById(el);
 
 function saveToLocalStorage() {
   const todosStr = JSON.stringify(todos);
@@ -10,32 +13,42 @@ function saveToLocalStorage() {
 function fetchData() {
   const data = localStorage.getItem("todo-list");
   const todosData = JSON.parse(data);
-  todos = todosData;
+  todos = todosData || [];
   renderTodos();
-}
-
-function addTodo() {
-  let task = todoText.value.trim();
-  if (!task) return;
-  todos.push({ key: Math.random(), task });
-  renderTodos();
-  saveToLocalStorage();
-}
-
-function deleteTodo(key) {
-  todos = todos.filter((el) => el.key != key);
-  renderTodos();
-  saveToLocalStorage();
 }
 
 function renderTodos() {
-  let todoStr = "";
-  todos.map((todo) => {
-    todoStr += `<div class="list-element ${todo.key}">
-          <span>${todo.task}</span>
-          <button class="delete-btn" onclick="deleteTodo('${todo.key}')">X</button>
-        </div>`;
+  list.innerHTML = "";
+  todos.map((el) => {
+    const clone = template.content.cloneNode(true);
+    clone.querySelector(".task").innerText = el.todo;
+    clone.querySelector(".delete-btn").addEventListener("click", (e) => {
+      todos = todos.filter(todo => todo.key !== el.key);
+      e.target.closest(".list-element").remove();
+      saveToLocalStorage();
+    });
+    list.appendChild(clone);
   });
-  list.innerHTML = todoStr;
 }
+
+$("add-btn").addEventListener("click", () => {
+  const text = todoText.value.trim();
+  if (text === "") return;
+
+  const key = Date.now();
+  todos.push({ key, todo: text });
+
+  const clone = template.content.cloneNode(true);
+  clone.querySelector(".task").innerText = text;
+
+  clone.querySelector(".delete-btn").addEventListener("click", (e) => {
+    todos = todos.filter(el => el.key !== key);
+    e.target.closest(".list-element").remove();
+    saveToLocalStorage();
+  });
+
+  saveToLocalStorage();
+  list.appendChild(clone);
+});
+
 fetchData();
