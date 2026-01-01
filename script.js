@@ -6,49 +6,61 @@ let todos = [];
 const $ = (el) => document.getElementById(el);
 
 function saveToLocalStorage() {
-  const todosStr = JSON.stringify(todos);
-  localStorage.setItem("todo-list", todosStr);
+  localStorage.setItem("todo-list", JSON.stringify(todos));
 }
 
 function fetchData() {
   const data = localStorage.getItem("todo-list");
-  const todosData = JSON.parse(data);
-  todos = todosData || [];
+  todos = data ? JSON.parse(data) : [];
   renderTodos();
+}
+
+function createTodoElement(el) {
+  const clone = template.content.cloneNode(true);
+  const task = clone.querySelector(".task");
+  const checkbox = clone.querySelector(".check-todo");
+  const deleteBtn = clone.querySelector(".delete-btn");
+
+  task.innerText = el.todo;
+
+  if (el.completed) {
+    task.classList.add("completed");
+    checkbox.checked = true;
+  }
+
+  deleteBtn.addEventListener("click", (e) => {
+    todos = todos.filter((todo) => todo.key !== el.key);
+    e.target.closest(".list-element").remove();
+    saveToLocalStorage();
+  });
+
+  checkbox.addEventListener("change", (e) => {
+    el.completed = e.target.checked;
+    task.classList.toggle("completed", el.completed);
+    saveToLocalStorage();
+  });
+
+  return clone;
 }
 
 function renderTodos() {
   list.innerHTML = "";
-  todos.map((el) => {
-    const clone = template.content.cloneNode(true);
-    clone.querySelector(".task").innerText = el.todo;
-    clone.querySelector(".delete-btn").addEventListener("click", (e) => {
-      todos = todos.filter(todo => todo.key !== el.key);
-      e.target.closest(".list-element").remove();
-      saveToLocalStorage();
-    });
-    list.appendChild(clone);
+  todos.forEach((el) => {
+    list.appendChild(createTodoElement(el));
   });
 }
 
 $("add-btn").addEventListener("click", () => {
   const text = todoText.value.trim();
-  if (text === "") return;
+  if (!text) return;
 
   const key = Date.now();
-  todos.push({ key, todo: text });
+  const newTodo = { key, todo: text, completed: false };
+  todos.push(newTodo);
 
-  const clone = template.content.cloneNode(true);
-  clone.querySelector(".task").innerText = text;
-
-  clone.querySelector(".delete-btn").addEventListener("click", (e) => {
-    todos = todos.filter(el => el.key !== key);
-    e.target.closest(".list-element").remove();
-    saveToLocalStorage();
-  });
-
+  list.appendChild(createTodoElement(newTodo));
   saveToLocalStorage();
-  list.appendChild(clone);
+  todoText.value = ""; // clear input
 });
 
 fetchData();

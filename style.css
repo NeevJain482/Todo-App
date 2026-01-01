@@ -16,8 +16,12 @@ body {
 }
 
 @keyframes gradientShift {
-  0% { background: linear-gradient(135deg, #6a00ff, #ff00bf); }
-  100% { background: linear-gradient(135deg, #ff006a, #9000ff); }
+  0% {
+    background: linear-gradient(135deg, #6a00ff, #ff00bf);
+  }
+  100% {
+    background: linear-gradient(135deg, #ff006a, #9000ff);
+  }
 }
 
 #container {
@@ -84,7 +88,7 @@ input:focus {
 
 .list-element {
   display: grid;
-  grid-template-columns: 1fr 40px;
+  grid-template-columns: 20px 1fr 40px;
   align-items: center;
   padding: 12px;
   margin: 10px 0;
@@ -124,5 +128,11 @@ span {
 .completed {
   text-decoration: line-through;
   color: #888;
-  background-color: #e0e0e0;
 }
+
+.check-todo[type=checkbox] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
