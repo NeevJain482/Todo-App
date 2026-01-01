@@ -8,7 +8,12 @@
   </head>
   <body>
     <div id="container">
-      <button id="edit-btn"><img src="./icons/edit.svg" alt="edit" /></button>
+      <button id="save-edit-btn">
+        <img src="./icons/tick.svg" alt="save" />
+      </button>
+      <button id="edit-btn">
+        <img src="./icons/edit.svg" alt="edit" />
+      </button>
       <h1>To-Do List</h1>
       <div id="input-field">
         <input id="todo-text" type="text" autocomplete="off" />
@@ -19,9 +24,15 @@
     <template id="template">
       <div class="list-element">
         <input type="checkbox" class="check-todo" />
-        <span class="task"></span>
+        <input type="task" class="task" />
+        <button class="edit-task-btn">
+          <img src="./icons/edit.svg" alt="edit" />
+        </button>
+        <button class="save-task-edit-btn">
+          <img src="./icons/tick.svg" alt="save" />
+        </button>
         <button class="delete-btn">
-          <img src="icons/delete.svg" alt="del" />
+          <img src="./icons/delete.svg" alt="del" />
         </button>
       </div>
     </template>

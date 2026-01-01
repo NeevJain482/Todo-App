@@ -17,14 +17,17 @@ function fetchData() {
 
 function createTodoElement(el) {
   const clone = template.content.cloneNode(true);
-  const task = clone.querySelector(".task");
+  const taskInput = clone.querySelector(".task");
   const checkbox = clone.querySelector(".check-todo");
   const deleteBtn = clone.querySelector(".delete-btn");
+  const editBtn = clone.querySelector(".edit-task-btn");
+  const saveTask = clone.querySelector(".save-task-edit-btn");
 
-  task.innerText = el.todo;
+  taskInput.disabled = true;
+  taskInput.value = el.todo;
 
   if (el.completed) {
-    task.classList.add("completed");
+    taskInput.classList.add("completed");
     checkbox.checked = true;
   }
 
@@ -36,8 +39,47 @@ function createTodoElement(el) {
 
   checkbox.addEventListener("change", (e) => {
     el.completed = e.target.checked;
-    task.classList.toggle("completed", el.completed);
+    taskInput.classList.toggle("completed", el.completed);
     saveToLocalStorage();
+  });
+
+  editBtn.addEventListener("click", () => {
+    editBtn.style.display = "none";
+    saveTask.style.display = "block";
+    taskInput.disabled = false;
+    taskInput.style.borderBottom = "1px solid black";
+
+    $("save-edit-btn").disabled = true;
+    let items = document.getElementsByClassName("edit-task-btn");
+
+    for (const item of items) {
+      if (item != this) item.disabled = true;
+    }
+    items = document.getElementsByClassName("delete-btn");
+    for (const item of items) {
+      item.disabled = true;
+    }
+  });
+
+  saveTask.addEventListener("click", () => {
+    if (taskInput.value.trim() == "") {
+      alert("Cannot save empty!");
+      return;
+    }
+    editBtn.style.display = "block";
+    saveTask.style.display = "none";
+    taskInput.disabled = true;
+    taskInput.style.border = "none";
+
+    $("save-edit-btn").disabled = false;
+    let items = document.getElementsByClassName("edit-task-btn");
+    for (const item of items) {
+      item.disabled = false;
+    }
+    items = document.getElementsByClassName("delete-btn");
+    for (const item of items) {
+      item.disabled = false;
+    }
   });
 
   return clone;
@@ -61,6 +103,49 @@ $("add-btn").addEventListener("click", () => {
   list.appendChild(createTodoElement(newTodo));
   saveToLocalStorage();
   todoText.value = ""; // clear input
+});
+
+$("edit-btn").addEventListener("click", (e) => {
+  let items = document.getElementsByClassName("edit-task-btn");
+  for (const item of items) {
+    const checkbox = item.closest(".list-element").querySelector(".check-todo");
+    if (checkbox && !checkbox.checked) {
+      item.style.display = "block";
+    }
+  }
+  items = document.getElementsByClassName("delete-btn");
+  for (const item of items) {
+    item.style.display = "block";
+  }
+
+  items = document.getElementsByClassName("check-todo");
+  for (const item of items) {
+    item.disabled = true;
+  }
+
+  todoText.disabled = true;
+  $("add-btn").disabled = true;
+  $("edit-btn").style.display = "none";
+  $("save-edit-btn").style.display = "block";
+});
+
+$("save-edit-btn").addEventListener("click", (e) => {
+  let items = document.getElementsByClassName("edit-task-btn");
+  for (const item of items) {
+    item.style.display = "none";
+  }
+  items = document.getElementsByClassName("delete-btn");
+  for (const item of items) {
+    item.style.display = "none";
+  }
+  items = document.getElementsByClassName("check-todo");
+  for (const item of items) {
+    item.disabled = false;
+  }
+  todoText.disabled = false;
+  $("add-btn").disabled = false;
+  $("edit-btn").style.display = "block";
+  $("save-edit-btn").style.display = "none";
 });
 
 fetchData();

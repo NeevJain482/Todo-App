@@ -60,7 +60,7 @@ h1 {
   border: 1px solid #ddd;
 }
 
-input {
+#todo-text {
   padding: 14px 18px;
   font-size: 16px;
   border: none;
@@ -69,7 +69,7 @@ input {
   transition: background 0.3s ease;
 }
 
-input:focus {
+#todo-text:focus {
   background-color: #fff;
 }
 
@@ -92,7 +92,7 @@ input:focus {
 
 .list-element {
   display: grid;
-  grid-template-columns: 24px 1fr 40px;
+  grid-template-columns: 24px 1fr 40px 40px;
   align-items: center;
   padding: 14px;
   margin: 12px 0;
@@ -107,14 +107,25 @@ input:focus {
   background-color: #f9f9f9;
 }
 
-span {
-  font-size: 16px;
-  color: #333;
-  padding-left: 12px;
+.task {
+  padding-bottom: 3px;
+  margin: 5px 5px;
+  font-size: 18px;
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
+
+.task:focus {
+  font-size: 20px;
 }
 
 .delete-btn,
-#edit-btn {
+#edit-btn,
+.edit-task-btn,
+#save-edit-btn,
+.save-task-edit-btn,
+#save-edit-btn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,8 +138,19 @@ span {
   transition: transform 0.25s ease, background 0.3s ease;
 }
 
+.save-task-edit-btn,
+.delete-btn,
+.edit-task-btn,
+#save-edit-btn {
+  display: none;
+}
+
 .delete-btn img,
-#edit-btn img {
+#edit-btn img,
+.edit-task-btn img,
+#save-edit-btn img,
+.save-task-edit-btn img,
+#save-edit-btn img {
   width: 18px;
   height: 18px;
 }
@@ -148,7 +170,7 @@ span {
   color: #888;
 }
 
-.check-todo[type=checkbox] {
+.check-todo[type="checkbox"] {
   width: 18px;
   height: 18px;
   cursor: pointer;
